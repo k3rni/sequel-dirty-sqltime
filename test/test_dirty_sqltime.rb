@@ -16,6 +16,17 @@ class TimeRange < Sequel::Model
 end
 
 class DirtySQLTime < Minitest::Test
+  def test_column_is_sqltime
+    obj = TimeRange.create(start: "0:30", end: "21:37")
+    assert_kind_of(Sequel::SQLTime, obj.start, "Expected start column to be a SQLTime")
+  end
+
+  def test_fetched_column_is_sqltime
+    TimeRange.create(start: "0:30", end: "21:37")
+    obj = TimeRange.first
+    assert_kind_of(Sequel::SQLTime, obj.start, "Expected start column to be a SQLTime")
+  end
+
   def test_sqltime_on_created
     obj = TimeRange.create(start: "0:30", end: "21:37")
     assert_equal({}, obj.column_changes, "Expected column_changes to be empty")
